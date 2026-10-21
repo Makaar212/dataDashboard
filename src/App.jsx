@@ -21,6 +21,8 @@ const CITIES = [
 function App() {
   const [minTemp, setMinTemp] = useState(0)
   const [weather, setWeather] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
   useEffect(() => {
     const fetchWeather = async () => {
@@ -33,18 +35,27 @@ function App() {
         '&daily=precipitation_probability_max,sunshine_duration' +
         '&temperature_unit=fahrenheit&timezone=America%2FLos_Angeles&forecast_days=1'
 
-      const response = await fetch(url)
-      const data = await response.json()
+      try {
+        const response = await fetch(url)
+        if (!response.ok) {
+          throw new Error(`Request failed with status ${response.status}`)
+        }
+        const data = await response.json()
 
-      // Open-Meteo returns one result per city, in the same order as CITIES
-      setWeather(
-        data.map((result, i) => ({
-          city: CITIES[i].name,
-          temperature: result.current.temperature_2m,
-          chanceOfRain: result.daily.precipitation_probability_max[0],
-          hoursOfSun: (result.daily.sunshine_duration[0] / 3600).toFixed(1),
-        }))
-      )
+        // Open-Meteo returns one result per city, in the same order as CITIES
+        setWeather(
+          data.map((result, i) => ({
+            city: CITIES[i].name,
+            temperature: result.current.temperature_2m,
+            chanceOfRain: result.daily.precipitation_probability_max[0],
+            hoursOfSun: (result.daily.sunshine_duration[0] / 3600).toFixed(1),
+          }))
+        )
+      } catch (err) {
+        setError(err.message)
+      } finally {
+        setLoading(false)
+      }
     }
 
     fetchWeather()
@@ -81,6 +92,12 @@ function App() {
             <span>Rain</span>
             <span>Sun</span>
           </div>
+
+          {loading && <p className="status-message">Loading weather...</p>}
+
+          {error && (
+            <p className="status-message">Couldn't load the weather: {error}</p>
+          )}
 
           {weather.map((row) => (
             <WeatherRow

@@ -106,3 +106,10 @@
 .weather-row span:first-child {
   font-weight: 600;
 }
+
+.status-message {
+  margin: 0;
+  padding: 16px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.8);
+}
