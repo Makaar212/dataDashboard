@@ -1,13 +1,58 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
 import SummaryCard from './components/SummaryCard'
+import WeatherRow from './components/WeatherRow'
+
+const CITIES = [
+  { name: 'Seattle', latitude: 47.6062, longitude: -122.3321 },
+  { name: 'Spokane', latitude: 47.6588, longitude: -117.426 },
+  { name: 'Tacoma', latitude: 47.2529, longitude: -122.4443 },
+  { name: 'Vancouver', latitude: 45.6387, longitude: -122.6615 },
+  { name: 'Bellevue', latitude: 47.6101, longitude: -122.2015 },
+  { name: 'Everett', latitude: 47.979, longitude: -122.2021 },
+  { name: 'Yakima', latitude: 46.6021, longitude: -120.5059 },
+  { name: 'Olympia', latitude: 47.0379, longitude: -122.9007 },
+  { name: 'Bellingham', latitude: 48.7519, longitude: -122.4787 },
+  { name: 'Redmond', latitude: 47.674, longitude: -122.1215 },
+  { name: 'Walla Walla', latitude: 46.0646, longitude: -118.343 },
+  { name: 'Kennewick', latitude: 46.2112, longitude: -119.1372 },
+]
 
 function App() {
   const [minTemp, setMinTemp] = useState(0)
+  const [weather, setWeather] = useState([])
+
+  useEffect(() => {
+    const fetchWeather = async () => {
+      const latitudes = CITIES.map((city) => city.latitude).join(',')
+      const longitudes = CITIES.map((city) => city.longitude).join(',')
+      const url =
+        'https://api.open-meteo.com/v1/forecast' +
+        `?latitude=${latitudes}&longitude=${longitudes}` +
+        '&current=temperature_2m' +
+        '&daily=precipitation_probability_max,sunshine_duration' +
+        '&temperature_unit=fahrenheit&timezone=America%2FLos_Angeles&forecast_days=1'
+
+      const response = await fetch(url)
+      const data = await response.json()
+
+      // Open-Meteo returns one result per city, in the same order as CITIES
+      setWeather(
+        data.map((result, i) => ({
+          city: CITIES[i].name,
+          temperature: result.current.temperature_2m,
+          chanceOfRain: result.daily.precipitation_probability_max[0],
+          hoursOfSun: (result.daily.sunshine_duration[0] / 3600).toFixed(1),
+        }))
+      )
+    }
+
+    fetchWeather()
+  }, [])
 
   return (
     <div className="App">
-      <h1>Weather in Washington</h1>
+      <h1>Weather in Washington Right Now</h1>
 
       <div className="summary-cards">
         <SummaryCard emoji="🌡️" data="--" information="Average Temperature" />
@@ -28,6 +73,25 @@ function App() {
             onChange={(e) => setMinTemp(Number(e.target.value))}
           />
         </label>
+
+        <div className="weather-grid">
+          <div className="weather-header">
+            <span>City</span>
+            <span>Temp</span>
+            <span>Rain</span>
+            <span>Sun</span>
+          </div>
+
+          {weather.map((row) => (
+            <WeatherRow
+              key={row.city}
+              city={row.city}
+              temperature={row.temperature}
+              chanceOfRain={row.chanceOfRain}
+              hoursOfSun={row.hoursOfSun}
+            />
+          ))}
+        </div>
       </div>
     </div>
   )
