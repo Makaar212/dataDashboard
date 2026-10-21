@@ -61,14 +61,36 @@ function App() {
     fetchWeather()
   }, [])
 
+  const average = (key) => {
+    if (weather.length === 0) return null
+    const total = weather.reduce((sum, row) => sum + Number(row[key]), 0)
+    return (total / weather.length).toFixed(1)
+  }
+
+  const avgTemperature = average('temperature')
+  const avgChanceOfRain = average('chanceOfRain')
+  const avgHoursOfSun = average('hoursOfSun')
+
   return (
     <div className="App">
       <h1>Weather in Washington Right Now</h1>
 
       <div className="summary-cards">
-        <SummaryCard emoji="🌡️" data="--" information="Average Temperature" />
-        <SummaryCard emoji="🌧️" data="--" information="Average Chance of Rain" />
-        <SummaryCard emoji="☀️" data="--" information="Average Hours of Sun" />
+        <SummaryCard
+          emoji="🌡️"
+          data={avgTemperature ? `${avgTemperature}°F` : '--'}
+          information="Average Temperature"
+        />
+        <SummaryCard
+          emoji="🌧️"
+          data={avgChanceOfRain ? `${avgChanceOfRain}%` : '--'}
+          information="Average Chance of Rain"
+        />
+        <SummaryCard
+          emoji="☀️"
+          data={avgHoursOfSun ? `${avgHoursOfSun} hrs` : '--'}
+          information="Average Hours of Sun"
+        />
       </div>
 
       <div className="data-container">
