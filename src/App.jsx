@@ -20,6 +20,7 @@ const CITIES = [
 
 function App() {
   const [minTemp, setMinTemp] = useState(0)
+  const [searchInput, setSearchInput] = useState('')
   const [weather, setWeather] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -61,10 +62,16 @@ function App() {
     fetchWeather()
   }, [])
 
+  const filteredWeather = weather.filter(
+    (row) =>
+      row.city.toLowerCase().includes(searchInput.toLowerCase()) &&
+      row.temperature > minTemp
+  )
+
   const average = (key) => {
-    if (weather.length === 0) return null
-    const total = weather.reduce((sum, row) => sum + Number(row[key]), 0)
-    return (total / weather.length).toFixed(1)
+    if (filteredWeather.length === 0) return null
+    const total = filteredWeather.reduce((sum, row) => sum + Number(row[key]), 0)
+    return (total / filteredWeather.length).toFixed(1)
   }
 
   const avgTemperature = average('temperature')
@@ -89,12 +96,17 @@ function App() {
         <SummaryCard
           emoji="☀️"
           data={avgHoursOfSun ? `${avgHoursOfSun} hrs` : '--'}
-          information="Average Hours of Sun"
+          information="Average Hours of Sun Today"
         />
       </div>
 
       <div className="data-container">
-        <input type="search" placeholder="Search for a city..." />
+        <input
+          type="search"
+          placeholder="Search for a city..."
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
+        />
 
         <label>
           Temperature above {minTemp}°F
@@ -121,7 +133,11 @@ function App() {
             <p className="status-message">Couldn't load the weather: {error}</p>
           )}
 
-          {weather.map((row) => (
+          {!loading && !error && filteredWeather.length === 0 && (
+            <p className="status-message">No cities match your filters</p>
+          )}
+
+          {filteredWeather.map((row) => (
             <WeatherRow
               key={row.city}
               city={row.city}
