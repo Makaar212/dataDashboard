@@ -1,0 +1,8 @@
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #2f6fb5 0%, #5a9bd8 50%, #8fc1ea 100%);
+  background-attachment: fixed;
+  color: white;
+  font-family: system-ui, sans-serif;
+}
