@@ -18,7 +18,12 @@ const CITIES = [
   { name: 'Kennewick', latitude: 46.2112, longitude: -119.1372 },
 ]
 
+// One degree below the coldest city, so every city shows at the far left
+const lowestSliderValue = (rows) =>
+  Math.floor(Math.min(...rows.map((row) => row.temperature))) - 1
+
 function App() {
+  const [sliderValue, setSliderValue] = useState(0)
   const [minTemp, setMinTemp] = useState(0)
   const [searchInput, setSearchInput] = useState('')
   const [weather, setWeather] = useState([])
@@ -44,14 +49,14 @@ function App() {
         const data = await response.json()
 
         // Open-Meteo returns one result per city, in the same order as CITIES
-        setWeather(
-          data.map((result, i) => ({
-            city: CITIES[i].name,
-            temperature: result.current.temperature_2m,
-            chanceOfRain: result.daily.precipitation_probability_max[0],
-            hoursOfSun: (result.daily.sunshine_duration[0] / 3600).toFixed(1),
-          }))
-        )
+        const rows = data.map((result, i) => ({
+          city: CITIES[i].name,
+          temperature: result.current.temperature_2m,
+          chanceOfRain: result.daily.precipitation_probability_max[0],
+          hoursOfSun: (result.daily.sunshine_duration[0] / 3600).toFixed(1),
+        }))
+        setWeather(rows)
+        setSliderValue(lowestSliderValue(rows))
       } catch (err) {
         setError(err.message)
       } finally {
@@ -61,6 +66,16 @@ function App() {
 
     fetchWeather()
   }, [])
+
+  // Wait until the slider stops moving before filtering
+  useEffect(() => {
+    const timeout = setTimeout(() => setMinTemp(sliderValue), 300)
+    return () => clearTimeout(timeout)
+  }, [sliderValue])
+
+  const temperatures = weather.map((row) => row.temperature)
+  const sliderMin = weather.length ? lowestSliderValue(weather) : 0
+  const sliderMax = weather.length ? Math.ceil(Math.max(...temperatures)) : 100
 
   const filteredWeather = weather.filter(
     (row) =>
@@ -109,13 +124,13 @@ function App() {
         />
 
         <label>
-          Temperature above {minTemp}°F
+          Temperature above {sliderValue}°F
           <input
             type="range"
-            min="0"
-            max="100"
-            value={minTemp}
-            onChange={(e) => setMinTemp(Number(e.target.value))}
+            min={sliderMin}
+            max={sliderMax}
+            value={sliderValue}
+            onChange={(e) => setSliderValue(Number(e.target.value))}
           />
         </label>
 
