@@ -79,6 +79,14 @@ function Dashboard({ weather, loading, error }) {
             unit="°F"
             domain={tempDomain}
           />
+          <CityBarChart
+            title="Chance of Rain by City"
+            valueName="Chance of Rain"
+            data={filteredWeather}
+            dataKey="chanceOfRain"
+            unit="%"
+            domain={[0, 100]}
+          />
         </div>
       )}
 
