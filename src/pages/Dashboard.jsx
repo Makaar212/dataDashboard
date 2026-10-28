@@ -100,7 +100,8 @@ function Dashboard({ weather, loading, error }) {
 
           {filteredWeather.map((row) => (
             <WeatherRow
-              key={row.city}
+              key={row.slug}
+              slug={row.slug}
               city={row.city}
               temperature={row.temperature}
               chanceOfRain={row.chanceOfRain}

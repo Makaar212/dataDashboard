@@ -4,6 +4,7 @@ import './App.css'
 import CITIES from './data/cities'
 import Sidebar from './components/Sidebar'
 import About from './pages/About'
+import CityDetail from './pages/CityDetail'
 import Dashboard from './pages/Dashboard'
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
         setWeather(
           data.map((result, i) => ({
             city: CITIES[i].name,
+            slug: CITIES[i].slug,
             temperature: result.current.temperature_2m,
             chanceOfRain: result.daily.precipitation_probability_max[0],
             hoursOfSun: (result.daily.sunshine_duration[0] / 3600).toFixed(1),
@@ -56,6 +58,10 @@ function App() {
           <Route
             path="/"
             element={<Dashboard weather={weather} loading={loading} error={error} />}
+          />
+          <Route
+            path="/city/:slug"
+            element={<CityDetail weather={weather} loading={loading} error={error} />}
           />
           <Route path="/about" element={<About />} />
         </Routes>

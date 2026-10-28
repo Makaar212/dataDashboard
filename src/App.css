@@ -176,6 +176,13 @@
 .weather-row {
   border-radius: 10px;
   background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  text-decoration: none;
+  transition: background-color 0.15s;
+}
+
+.weather-row:hover {
+  background-color: rgba(255, 255, 255, 0.25);
 }
 
 .weather-row span:first-child {
@@ -187,4 +194,19 @@
   padding: 16px;
   text-align: center;
   color: rgba(255, 255, 255, 0.8);
+}
+
+.back-link {
+  align-self: flex-start;
+  color: white;
+  text-decoration: none;
+  opacity: 0.85;
+}
+
+.back-link:hover {
+  opacity: 1;
+}
+
+.status-message a {
+  color: white;
 }

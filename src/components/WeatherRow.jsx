@@ -1,11 +1,13 @@
-function WeatherRow({ city, temperature, chanceOfRain, hoursOfSun }) {
+import { Link } from 'react-router-dom'
+
+function WeatherRow({ slug, city, temperature, chanceOfRain, hoursOfSun }) {
   return (
-    <div className="weather-row">
+    <Link to={`/city/${slug}`} className="weather-row">
       <span>{city}</span>
       <span>{temperature}°F</span>
       <span>{chanceOfRain}%</span>
       <span>{hoursOfSun} hrs</span>
-    </div>
+    </Link>
   )
 }
 
