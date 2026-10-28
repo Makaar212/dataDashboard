@@ -1,14 +1,89 @@
-.App {
+.layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: 200px;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 24px 16px;
+  background-color: rgba(255, 255, 255, 0.12);
+  border-right: 1px solid rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(10px);
+}
+
+.sidebar-title {
+  margin: 0 0 16px;
+  font-size: 1.4rem;
+}
+
+.sidebar-link {
+  padding: 10px 12px;
+  border-radius: 10px;
+  color: white;
+  text-decoration: none;
+}
+
+.sidebar-link:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* NavLink adds the "active" class to the link for the current page */
+.sidebar-link.active {
+  background-color: rgba(255, 255, 255, 0.2);
+  font-weight: 600;
+}
+
+.main-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.page {
   display: flex;
   flex-direction: column;
   gap: 24px;
   padding: 24px;
 }
 
-.App h1 {
+.page h1 {
   font-size: 3rem;
   text-align: center;
   margin: 0;
+}
+
+.about-text {
+  max-width: 600px;
+  margin: 0 auto;
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+@media (max-width: 700px) {
+  .layout {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    position: static;
+    height: auto;
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+  }
+
+  .sidebar-title {
+    margin: 0 auto 0 0;
+  }
 }
 
 .summary-cards {

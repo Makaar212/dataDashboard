@@ -40,7 +40,7 @@ function Dashboard({ weather, loading, error }) {
   const avgHoursOfSun = average('hoursOfSun')
 
   return (
-    <div className="App">
+    <div className="page">
       <h1>Weather in Washington Right Now</h1>
 
       <div className="summary-cards">

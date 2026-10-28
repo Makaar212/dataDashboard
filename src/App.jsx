@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import './App.css'
 import CITIES from './data/cities'
+import Sidebar from './components/Sidebar'
+import About from './pages/About'
 import Dashboard from './pages/Dashboard'
 
 function App() {
@@ -47,12 +49,18 @@ function App() {
   }, [])
 
   return (
-    <Routes>
-      <Route
-        path="/"
-        element={<Dashboard weather={weather} loading={loading} error={error} />}
-      />
-    </Routes>
+    <div className="layout">
+      <Sidebar />
+      <main className="main-content">
+        <Routes>
+          <Route
+            path="/"
+            element={<Dashboard weather={weather} loading={loading} error={error} />}
+          />
+          <Route path="/about" element={<About />} />
+        </Routes>
+      </main>
+    </div>
   )
 }
 
