@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import CityBarChart from '../components/CityBarChart'
 import SummaryCard from '../components/SummaryCard'
 import WeatherRow from '../components/WeatherRow'
 
@@ -39,6 +40,13 @@ function Dashboard({ weather, loading, error }) {
   const avgChanceOfRain = average('chanceOfRain')
   const avgHoursOfSun = average('hoursOfSun')
 
+  // Temperature has no natural zero, so zoom the axis in around the actual values
+  const filteredTemps = filteredWeather.map((row) => row.temperature)
+  const tempDomain = [
+    Math.floor(Math.min(...filteredTemps)) - 2,
+    Math.ceil(Math.max(...filteredTemps)) + 1,
+  ]
+
   return (
     <div className="page">
       <h1>Weather in Washington Right Now</h1>
@@ -60,6 +68,19 @@ function Dashboard({ weather, loading, error }) {
           information="Average Hours of Sun Today"
         />
       </div>
+
+      {filteredWeather.length > 0 && (
+        <div className="charts">
+          <CityBarChart
+            title="Temperature by City"
+            valueName="Temperature"
+            data={filteredWeather}
+            dataKey="temperature"
+            unit="°F"
+            domain={tempDomain}
+          />
+        </div>
+      )}
 
       <div className="data-container">
         <input
