@@ -59,10 +59,7 @@ function App() {
             path="/"
             element={<Dashboard weather={weather} loading={loading} error={error} />}
           />
-          <Route
-            path="/city/:slug"
-            element={<CityDetail weather={weather} loading={loading} error={error} />}
-          />
+          <Route path="/city/:slug" element={<CityDetail />} />
           <Route path="/about" element={<About />} />
         </Routes>
       </main>
